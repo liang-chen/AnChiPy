@@ -51,7 +51,7 @@ def render_whole_page(uni_words, loc_list):
         draw.text(loc_list[i], jtof(uni_words[i]),font=font,fill=(0,0,0,0))
         if(loc_list[i][1] == 0):
             ##draw red vertical line
-            draw.line((loc_list[i][0]+udl_margin, 0, loc_list[i][0]+udl_margin, img_height),fill = (255,0,0,0), width = udl_width)
+            draw.line((loc_list[i][0]-udl_margin, 0, loc_list[i][0]-udl_margin, img_height),fill = (255,0,0,0), width = udl_width)
     im.save('anchipy_formatted.jpg','JPEG')
 
 def main():
