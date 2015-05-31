@@ -21,15 +21,7 @@ Installation
 .. code-block:: bash
     
     $ git clone MY_ANCHIPY_PACKAGE
-    $ python setup.py install --user
-
-Add a line to your ~/.bashrc to make it executable
-
-.. code-block:: bash
-
-    alias anchipy='/PATH_TO_PYTHON/bin/anchipy'
-    
-pip installation unavailable yet...
+    $ python setup.py install --install-scripts=/usr/local/bin
 
 =====
 Usage
