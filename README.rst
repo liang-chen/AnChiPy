@@ -8,11 +8,11 @@ This application is aimed to convert the plain simplified Chinese text into vert
 Dependency
 ==========
 
-This package is dependent on `Python Imaging Library`_ (PIL), `Jianfan 0.0.2`_, and using the `cxTeX fonts`_.
+This package is dependent on `Python Imaging Library`_ (PIL), `Jianfan 0.0.2`_, and using the `cwTeX fonts`_.
 
 .. _Jianfan 0.0.2: https://pypi.python.org/pypi/Jianfan
 .. _Python Imaging Library: https://pypi.python.org/pypi/PIL
-.. _cxTex fonts: https://github.com/l10n-tw/cwtex-q-fonts
+.. _cwTex fonts: https://github.com/l10n-tw/cwtex-q-fonts
 
 ============
 Installation
