@@ -35,7 +35,7 @@ pip installation unavailable yet...
 Usage
 =====
 
-Type your Chinese writings into a text file (in either Simplified or Traditional font), and use **AnChiPy** to generate the ancient-style-page (in image format). For instance,
+Type your Chinese writings into a text file (in either Simplified or Traditional font), and use **AnChiPy** to generate the ancient-style page (in image format). For instance,
 
 .. code-block:: bash
 
