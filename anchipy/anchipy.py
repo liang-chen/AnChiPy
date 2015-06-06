@@ -9,6 +9,7 @@ from PIL import ImageFont, ImageDraw,Image
 from jianfan import jtof
 from glob import *
 import sys
+from PyPDF2 import PdfFileReader,PdfFileMerger
 from math import ceil
 from pkg_resources import resource_filename
 
@@ -25,15 +26,15 @@ def locate_words(uni_words):
     tot_len = n*font_size
     ncols = int(ceil(float(tot_len)/img_height)); 
     #set global image width
-    img_width = ncols*(font_size+2*udl_margin+udl_width)
+    img_width = ncols*(font_size+2*udl_margin+udl_width) + 2*tot_margin
 #    print ncols, img_width, img_height
 
     ##set word locations
-    curi = 0 ##increase y-coord
-    curj = img_width - font_size  ##decrease x-coord
+    curi = tot_margin ##increase y-coord
+    curj = img_width - tot_margin - font_size  ##decrease x-coord
     for i in range(len(uni_words)):
-        if curi + font_size > img_height:
-            curi = 0
+        if curi + font_size > img_height - tot_margin:
+            curi = tot_margin
             curj -= (font_size + 2*udl_margin + udl_width)
         ll.append((curj, curi))
         curi += font_size
@@ -44,16 +45,22 @@ def render_whole_page(uni_words, loc_list):
     global font_size,img_height,img_width,udl_width,udl_margin
     if img_width == 0:
         return;
-    im = Image.new('RGBA', (img_width, img_height), (255, 255, 255, 0))
+    im = Image.new('RGB', (img_width, img_height), (255, 255, 255))
     draw = ImageDraw.Draw(im)
     font = ImageFont.truetype(resource_filename(__name__,'cwTeXQKaiZH-Medium.ttf'), size = font_size, encoding = "unic")
     for i in range(len(uni_words)):
         draw.text(loc_list[i], jtof(uni_words[i]),font=font,fill=(0,0,0,0))
-        if(loc_list[i][1] == 0):
+        if loc_list[i][1] == 0:
             ##draw red vertical line
             draw.line((loc_list[i][0]-udl_margin, 0, loc_list[i][0]-udl_margin, img_height),fill = (255,0,0,0), width = udl_width)
-    im.save('anchipy_formatted.jpg','JPEG')
+    
+    im.save('temp.pdf')
 
+    merger = PdfFileMerger()
+    merger.append(PdfFileReader(file('temp.pdf','rb')))
+    merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
+    merger.write("anchipy_formatted.pdf")
+    
 def main():
     filename = sys.argv[1]
     uni_words = unicode(read_utf8_file(filename), 'utf8')
