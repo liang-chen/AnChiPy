@@ -86,13 +86,14 @@ def render_whole_page(uni_words, loc_list):
         return;
     im = Image.new('RGB', (img_width, img_height), (255, 255, 255))
     draw = ImageDraw.Draw(im)
-    font = ImageFont.truetype(resource_filename(__name__,'cwTeXQKaiZH-Medium.ttf'), size = font_size, encoding = "unic")
+    font = ImageFont.truetype(resource_filename(__name__,'eduSong_Unicode.ttf'), size = font_size, encoding = "unic")
     for i in range(len(uni_words)):
         draw.text(loc_list[i], jtof(uni_words[i]),font=font,fill=(0,0,0,0))
         if loc_list[i][1] == tot_margin:
             ##draw red vertical line
             draw.line((loc_list[i][0]-udl_margin, tot_margin, loc_list[i][0]-udl_margin, img_height-tot_margin),fill = (255,0,0,0), width = udl_width)
     add_border(draw)
+    im.save('temp.jpg','JPEG')
     im.save('temp.pdf')
 
     merger = PdfFileMerger()
