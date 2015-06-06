@@ -30,7 +30,7 @@ setup(
     author = "Liang Chen",
     author_email = "chen348@indiana.edu",
     install_requires=[
-          'PIL','jianfan',
+          'PIL','jianfan','pypdf2'
       ],
     url = "",
     include_package_data = True,
