@@ -8,11 +8,10 @@ This application is aimed to convert the plain simplified Chinese text into vert
 Dependency
 ==========
 
-This package is dependent on `Python Imaging Library`_ (PIL), `Jianfan 0.0.2`_, and using the `cwTeX fonts`_.
+This package is dependent on `Python Imaging Library`_ (PIL) and `PyPDF2 1.24`_.
 
-.. _Jianfan 0.0.2: https://pypi.python.org/pypi/Jianfan
 .. _Python Imaging Library: https://pypi.python.org/pypi/PIL
-.. _cwTex fonts: https://github.com/l10n-tw/cwtex-q-fonts
+.. _PyPDF2 1.24: https://pypi.python.org/pypi/PyPDF2/1.24
 
 ============
 Installation
@@ -33,7 +32,7 @@ Type your Chinese writings into a text file (in either Simplified or Traditional
 
     $anchipy examples/ltjx.txt  
 
-The default output is **anchipy_formatted.jpg**.
+The default output is **anchipy_formatted.pdf**.
 
 =======
 LICENCE
