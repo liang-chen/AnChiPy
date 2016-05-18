@@ -2,7 +2,7 @@
 AnChiPy
 *******
 
-This application is aimed to convert the plain simplified Chinese text into vertically formatted (a.k.a ancient style) Traditional Chinese *literature*.
+This application is aimed to convert the plain simplified Chinese text into vertically formatted (a.k.a ancient style) classical Chinese document.
 
 ==========
 Dependency

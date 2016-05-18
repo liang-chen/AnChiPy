@@ -141,7 +141,7 @@ def init_image():
     return im, draw
 
 def new_page_merge(im):
-    im.save('temp.pdf')
+    im.save('temp.pdf',resolution = 200.0)
     merger = PdfFileMerger()
     merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
     merger.append(PdfFileReader(file('temp.pdf','rb')))
@@ -153,7 +153,7 @@ def render_paragraph(im, draw, P, loc_list, page_list, curp):
     font = ImageFont.truetype(resource_filename(__name__,'font.ttf'), size = normal_font_size, encoding = "unic")
     for i in range(len(P)):
         if page_list[i] != curp and curp == 0:
-            im.save('anchipy_formatted.pdf')
+            im.save('anchipy_formatted.pdf', resolution = 200.0)
             curp = page_list[i]
             im, draw = init_image()
         elif page_list[i] != curp and curp != 0:
