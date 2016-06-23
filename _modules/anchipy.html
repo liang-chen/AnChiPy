@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>anchipy &mdash; AnChiPy 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="AnChiPy 0.1.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for anchipy</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;anchipy.anchipy: provides entry point main().&quot;&quot;&quot;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.1&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageFont</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span><span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">globv</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">PyPDF2</span> <span class="kn">import</span> <span class="n">PdfFileReader</span><span class="p">,</span><span class="n">PdfFileMerger</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="read_utf8_file"><a class="viewcode-back" href="../modules.html#anchipy.read_utf8_file">[docs]</a><span class="k">def</span> <span class="nf">read_utf8_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read file contents as utf8 characters</span>
+<span class="sd">    </span>
+<span class="sd">    :param filename: input file name</span>
+<span class="sd">    :type filename: string</span>
+<span class="sd">    :return: array of utf-8 characters</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ch</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="locate_paragraph_words"><a class="viewcode-back" href="../modules.html#anchipy.locate_paragraph_words">[docs]</a><span class="k">def</span> <span class="nf">locate_paragraph_words</span><span class="p">(</span><span class="n">uni_words</span><span class="p">,</span> <span class="n">curj</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">normal_font_size</span><span class="p">,</span><span class="n">img_height</span><span class="p">,</span><span class="n">img_width</span><span class="p">,</span><span class="n">udl_width</span><span class="p">,</span><span class="n">udl_margin</span><span class="p">,</span><span class="n">col_width</span><span class="p">,</span><span class="n">tot_margin</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uni_words</span><span class="p">);</span>
+    <span class="n">ll</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pl</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1">##set word locations</span>
+    <span class="n">curi</span> <span class="o">=</span> <span class="n">tot_margin</span> <span class="c1">##increase y-coord</span>
+    <span class="n">curp</span> <span class="o">=</span> <span class="n">page</span>
+    <span class="c1">#curj = img_width - tot_margin - font_size  ##decrease x-coord</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uni_words</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">curi</span> <span class="o">+</span> <span class="n">normal_font_size</span> <span class="o">&gt;</span> <span class="n">img_height</span> <span class="o">-</span> <span class="n">tot_margin</span><span class="p">:</span>
+            <span class="n">curi</span> <span class="o">=</span> <span class="n">tot_margin</span>
+            <span class="n">curj</span> <span class="o">-=</span> <span class="n">col_width</span>
+        
+        <span class="k">if</span> <span class="n">curj</span> <span class="o">&lt;</span> <span class="n">tot_margin</span><span class="p">:</span>
+            <span class="n">curp</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">curj</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">tot_margin</span> <span class="o">-</span> <span class="n">col_width</span>
+
+        <span class="n">ll</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">curj</span><span class="p">,</span> <span class="n">curi</span><span class="p">))</span>
+        <span class="n">pl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">curp</span><span class="p">)</span>
+        <span class="n">curi</span> <span class="o">+=</span> <span class="n">normal_font_size</span>
+    
+    <span class="k">return</span> <span class="n">ll</span><span class="p">,</span><span class="n">pl</span><span class="p">,</span><span class="n">curj</span></div>
+
+<div class="viewcode-block" id="add_border"><a class="viewcode-back" href="../modules.html#anchipy.add_border">[docs]</a><span class="k">def</span> <span class="nf">add_border</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add top, bottom, left and right borders to the current doc</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#add horizontal ones:</span>
+    <span class="c1">#outter</span>
+    <span class="k">global</span> <span class="n">inner_border_margin</span><span class="p">,</span> <span class="n">inner_border_width</span><span class="p">,</span> <span class="n">outter_border_margin</span><span class="p">,</span> <span class="n">outter_border_width</span><span class="p">,</span> <span class="n">img_height</span><span class="p">,</span> <span class="n">img_width</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">outter_border_margin</span>
+    <span class="n">j1</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">j2</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">j1</span> <span class="o">-</span> <span class="n">outter_border_width</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j2</span><span class="p">,</span><span class="n">i</span><span class="p">),</span><span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">outter_border_width</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="n">img_height</span> <span class="o">-</span> <span class="n">outter_border_margin</span> <span class="o">-</span> <span class="n">outter_border_width</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j2</span><span class="p">,</span><span class="n">i</span><span class="p">),</span><span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">outter_border_width</span><span class="p">)</span>
+    
+    <span class="c1">#inner</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">outter_border_margin</span> <span class="o">+</span> <span class="n">outter_border_width</span> <span class="o">+</span> <span class="n">inner_border_margin</span>
+    <span class="n">j1</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">j2</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">j1</span> <span class="o">-</span> <span class="n">inner_border_width</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j2</span><span class="p">,</span><span class="n">i</span><span class="p">),</span><span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">inner_border_width</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="n">img_height</span> <span class="o">-</span> <span class="n">outter_border_margin</span> <span class="o">-</span> <span class="n">outter_border_width</span> <span class="o">-</span> <span class="n">inner_border_margin</span> <span class="o">-</span> <span class="n">inner_border_width</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j1</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j2</span><span class="p">,</span><span class="n">i</span><span class="p">),</span><span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">inner_border_width</span><span class="p">)</span>
+
+    <span class="c1">##vertical ones</span>
+    <span class="c1">#outter</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">outter_border_margin</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="n">i2</span> <span class="o">=</span> <span class="n">img_height</span> <span class="o">-</span> <span class="n">i1</span> <span class="o">-</span> <span class="n">outter_border_width</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j</span><span class="p">,</span><span class="n">i1</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i2</span><span class="p">),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">outter_border_width</span><span class="p">)</span>
+
+    <span class="n">j</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">outter_border_margin</span> <span class="o">-</span> <span class="n">outter_border_width</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j</span><span class="p">,</span><span class="n">i1</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i2</span><span class="p">),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">outter_border_width</span><span class="p">)</span>
+
+    <span class="c1">#inner</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">outter_border_margin</span> <span class="o">+</span> <span class="n">outter_border_width</span> <span class="o">+</span> <span class="n">inner_border_margin</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="n">i2</span> <span class="o">=</span> <span class="n">img_height</span> <span class="o">-</span> <span class="n">i1</span> <span class="o">-</span> <span class="n">inner_border_width</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j</span><span class="p">,</span><span class="n">i1</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i2</span><span class="p">),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">inner_border_width</span><span class="p">)</span>
+
+    <span class="n">j</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">j</span> <span class="o">-</span> <span class="n">inner_border_width</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">j</span><span class="p">,</span><span class="n">i1</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i2</span><span class="p">),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">inner_border_width</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="init_image"><a class="viewcode-back" href="../modules.html#anchipy.init_image">[docs]</a><span class="k">def</span> <span class="nf">init_image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize one page</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">img_height</span><span class="p">,</span><span class="n">img_width</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">img_width</span><span class="p">,</span> <span class="n">img_height</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="n">add_border</span><span class="p">(</span><span class="n">draw</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">im</span><span class="p">,</span> <span class="n">draw</span></div>
+
+<div class="viewcode-block" id="new_page_merge"><a class="viewcode-back" href="../modules.html#anchipy.new_page_merge">[docs]</a><span class="k">def</span> <span class="nf">new_page_merge</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Merge new page to the existing pages</span>
+
+<span class="sd">    :param im: new page</span>
+<span class="sd">    :type: PIL.image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;temp.pdf&#39;</span><span class="p">,</span><span class="n">resolution</span> <span class="o">=</span> <span class="mf">200.0</span><span class="p">)</span>
+    <span class="n">merger</span> <span class="o">=</span> <span class="n">PdfFileMerger</span><span class="p">()</span>
+    <span class="n">merger</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PdfFileReader</span><span class="p">(</span><span class="nb">file</span><span class="p">(</span><span class="s1">&#39;anchipy_formatted.pdf&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)))</span>
+    <span class="n">merger</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PdfFileReader</span><span class="p">(</span><span class="nb">file</span><span class="p">(</span><span class="s1">&#39;temp.pdf&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)))</span>
+    <span class="n">merger</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;anchipy_formatted.pdf&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;temp.pdf&#39;</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">render_paragraph</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">loc_list</span><span class="p">,</span> <span class="n">page_list</span><span class="p">,</span> <span class="n">curp</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">normal_font_size</span><span class="p">,</span><span class="n">img_height</span><span class="p">,</span><span class="n">img_width</span><span class="p">,</span><span class="n">udl_width</span><span class="p">,</span><span class="n">udl_margin</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">truetype</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span><span class="s1">&#39;font.ttf&#39;</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="n">normal_font_size</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;unic&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">page_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">curp</span> <span class="ow">and</span> <span class="n">curp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;anchipy_formatted.pdf&#39;</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="mf">200.0</span><span class="p">)</span>
+            <span class="n">curp</span> <span class="o">=</span> <span class="n">page_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">im</span><span class="p">,</span> <span class="n">draw</span> <span class="o">=</span> <span class="n">init_image</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">page_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">curp</span> <span class="ow">and</span> <span class="n">curp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#new page</span>
+            <span class="n">new_page_merge</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+            <span class="n">curp</span> <span class="o">=</span> <span class="n">page_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">im</span><span class="p">,</span> <span class="n">draw</span> <span class="o">=</span> <span class="n">init_image</span><span class="p">()</span>
+        
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">loc_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">,</span><span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="c1">#jtof(uni_words[i]),font=font,fill=(0,0,0,0))</span>
+        <span class="k">if</span> <span class="n">loc_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">tot_margin</span><span class="p">:</span>
+            <span class="c1">##draw red vertical line</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="n">loc_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">udl_margin</span><span class="p">,</span> <span class="n">tot_margin</span><span class="p">,</span> <span class="n">loc_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">udl_margin</span><span class="p">,</span> <span class="n">img_height</span><span class="o">-</span><span class="n">tot_margin</span><span class="p">),</span><span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="n">udl_width</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">im</span><span class="p">,</span><span class="n">draw</span><span class="p">,</span><span class="n">curp</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">uni_word_lines</span> <span class="o">=</span> <span class="p">[</span><span class="nb">unicode</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">read_utf8_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)]</span>
+    
+    <span class="n">im</span><span class="p">,</span> <span class="n">draw</span> <span class="o">=</span> <span class="n">init_image</span><span class="p">()</span>
+    <span class="k">global</span> <span class="n">img_width</span><span class="p">,</span><span class="n">col_width</span>
+    <span class="n">curp</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#current page</span>
+    <span class="n">curj</span> <span class="o">=</span> <span class="n">img_width</span> <span class="o">-</span> <span class="n">tot_margin</span> <span class="o">-</span> <span class="n">col_width</span> <span class="c1">#current horizontal position</span>
+    <span class="k">for</span> <span class="n">uni_words</span> <span class="ow">in</span> <span class="n">uni_word_lines</span><span class="p">:</span> 
+        <span class="n">ll</span><span class="p">,</span><span class="n">pl</span><span class="p">,</span><span class="n">curj</span> <span class="o">=</span> <span class="n">locate_paragraph_words</span><span class="p">(</span><span class="n">uni_words</span><span class="p">,</span> <span class="n">curj</span><span class="p">,</span> <span class="n">curp</span><span class="p">)</span>
+        <span class="c1">#print curj</span>
+        <span class="n">curj</span> <span class="o">-=</span> <span class="n">col_width</span> <span class="c1">#paragraph turn</span>
+        <span class="n">im</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">curp</span> <span class="o">=</span> <span class="n">render_paragraph</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">uni_words</span><span class="p">,</span> <span class="n">ll</span><span class="p">,</span> <span class="n">pl</span><span class="p">,</span> <span class="n">curp</span><span class="p">)</span>
+    <span class="n">new_page_merge</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Liang Chen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
