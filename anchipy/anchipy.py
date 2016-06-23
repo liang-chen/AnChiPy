@@ -35,6 +35,7 @@ def locate_paragraph_words(uni_words, curj, page):
     n = len(uni_words);
     ll = []
     pl = []
+
     ##set word locations
     curi = tot_margin ##increase y-coord
     curp = page
@@ -58,7 +59,7 @@ def add_border(draw):
     """
     Add top, bottom, left and right borders to the current doc
     """
-    
+
     #add horizontal ones:
     #outter
     global inner_border_margin, inner_border_width, outter_border_margin, outter_border_width, img_height, img_width
@@ -97,7 +98,8 @@ def add_border(draw):
 
     j = img_width - j - inner_border_width
     draw.line((j,i1,j,i2), fill = (255,0,0,0), width = inner_border_width)
-    
+
+
 def init_image():
     """
     Initialize one page
@@ -160,3 +162,4 @@ def main():
         curj -= col_width #paragraph turn
         im, draw, curp = render_paragraph(im, draw, uni_words, ll, pl, curp)
     new_page_merge(im)
+
