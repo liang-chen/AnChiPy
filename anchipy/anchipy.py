@@ -5,55 +5,36 @@
 
 __version__ = "0.1.1"
 
-from PIL import ImageFont, ImageDraw,Image
-#from jianfan import jtof
-from glob import *
+import os
 import sys
-from PyPDF2 import PdfFileReader,PdfFileMerger
 from math import ceil
 from pkg_resources import resource_filename
-import os
+from PIL import ImageFont, ImageDraw,Image
+from PyPDF2 import PdfFileReader,PdfFileMerger
+from globv import *
+
 
 def read_utf8_file(filename):
+    """
+    Read file contents as utf8 characters
+    
+    :param filename: input file name
+    :type filename: string
+    :return: array of utf-8 characters
+    :rtype: list
+    """
     with open(filename, 'rb') as f:
         lines = f.readlines()
         return [''.join([ch.strip() for ch in line.split()]) for line in lines]
-        #return ''.join([ch.strip() for ch in f.read().split()])
-
-#def locate_words(uni_words):
-#    global font_size,img_height,udl_width,udl_margin
-#    global img_width #unset yet
-#    n = len(uni_words);
-#    ll = []
-##    print n, " length of words"
-#    tot_len = n*font_size
-#    ncols = int(ceil(float(tot_len)/float(img_height-2*tot_margin))); 
-#    #set global image width
-#    img_width = ncols*(font_size+2*udl_margin+udl_width) + 2*tot_margin
-##    print ncols, img_width, img_height
-#
-#    ##set word locations
-#    curi = tot_margin ##increase y-coord
-#    curj = img_width - tot_margin - font_size  ##decrease x-coord
-#    for i in range(len(uni_words)):
-#        if curi + font_size > img_height - tot_margin:
-#            curi = tot_margin
-#            curj -= (font_size + 2*udl_margin + udl_width)
-#        ll.append((curj, curi))
-#        curi += font_size
-#
-#    return ll
 
 def locate_paragraph_words(uni_words, curj, page):
+    """
+    
+    """
     global normal_font_size,img_height,img_width,udl_width,udl_margin,col_width,tot_margin
     n = len(uni_words);
     ll = []
     pl = []
-    #tot_len = n*font_size
-    #ncols = int(ceil(float(tot_len)/float(img_height-2*tot_margin)));
-    #set global image width
-    #img_width = ncols*(font_size+2*udl_margin+udl_width) + 2*tot_margin
-    
     ##set word locations
     curi = tot_margin ##increase y-coord
     curp = page
@@ -74,6 +55,10 @@ def locate_paragraph_words(uni_words, curj, page):
     return ll,pl,curj
 
 def add_border(draw):
+    """
+    Add top, bottom, left and right borders to the current doc
+    """
+    
     #add horizontal ones:
     #outter
     global inner_border_margin, inner_border_width, outter_border_margin, outter_border_width, img_height, img_width
@@ -113,27 +98,10 @@ def add_border(draw):
     j = img_width - j - inner_border_width
     draw.line((j,i1,j,i2), fill = (255,0,0,0), width = inner_border_width)
     
-#def render_whole_page(uni_words, loc_list):
-#    global font_size,img_height,img_width,udl_width,udl_margin
-#    if img_width == 0:
-#        return;
-#    im = Image.new('RGB', (img_width, img_height), (255, 255, 255))
-#    draw = ImageDraw.Draw(im)
-#    font = ImageFont.truetype(resource_filename(__name__,'font.ttf'), size = font_size, encoding = "unic")
-#    for i in range(len(uni_words)):
-#        draw.text(loc_list[i], uni_words[i],font=font,fill=(0,0,0,0))#jtof(uni_words[i]),font=font,fill=(0,0,0,0))
-#        if loc_list[i][1] == tot_margin:
-#            ##draw red vertical line
-#            draw.line((loc_list[i][0]-udl_margin, tot_margin, loc_list[i][0]-udl_margin, img_height-tot_margin),fill = (255,0,0,0), width = udl_width)
-#    add_border(draw)
-#    im.save('temp.pdf')
-#
-#    merger = PdfFileMerger()
-#    merger.append(PdfFileReader(file('temp.pdf','rb')))
-#    merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
-#    merger.write("anchipy_formatted.pdf")
-
 def init_image():
+    """
+    Initialize one page
+    """
     global img_height,img_width
     im = Image.new('RGB', (img_width, img_height), (255, 255, 255))
     draw = ImageDraw.Draw(im)
@@ -141,6 +109,12 @@ def init_image():
     return im, draw
 
 def new_page_merge(im):
+    """
+    Merge new page to the existing pages
+
+    :param im: new page
+    :type: PIL.image
+    """
     im.save('temp.pdf',resolution = 200.0)
     merger = PdfFileMerger()
     merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
@@ -170,6 +144,9 @@ def render_paragraph(im, draw, P, loc_list, page_list, curp):
     return im,draw,curp
 
 def main():
+    """
+    Main function
+    """
     filename = sys.argv[1]
     uni_word_lines = [unicode(line, 'utf8') for line in read_utf8_file(filename)]
     
@@ -183,8 +160,3 @@ def main():
         curj -= col_width #paragraph turn
         im, draw, curp = render_paragraph(im, draw, uni_words, ll, pl, curp)
     new_page_merge(im)
-
-
-if __name__ == '__main__':
-    main()
-
