@@ -1,7 +1,8 @@
 *******
 AnChiPy
 *******
-`LICENSE <https://img.shields.io/github/license/mashape/apistatus.svg>`_
+.. image:: https://img.shields.io/github/license/mashape/apistatus.svg
+   :target:  https://github.com/liang-chen/AnChiPy/blob/master/LICENSE
 
 This application is aimed to convert the plain simplified Chinese text into vertically formatted (a.k.a ancient style) classical Chinese document.
 
