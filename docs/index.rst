@@ -11,7 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   modules
+.. automodule:: anchipy
+   :members:
 
 
 Indices and tables

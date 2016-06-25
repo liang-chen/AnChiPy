@@ -29,7 +29,7 @@ def read_utf8_file(filename):
 
 def locate_paragraph_words(uni_words, curj, page):
     """
-    
+    Locate words in paragraph
     """
     global normal_font_size,img_height,img_width,udl_width,udl_margin,col_width,tot_margin
     n = len(uni_words);
@@ -125,6 +125,9 @@ def new_page_merge(im):
     os.remove('temp.pdf')
 
 def render_paragraph(im, draw, P, loc_list, page_list, curp):
+    """
+    Render a paragraph
+    """
     global normal_font_size,img_height,img_width,udl_width,udl_margin
     font = ImageFont.truetype(resource_filename(__name__,'font.ttf'), size = normal_font_size, encoding = "unic")
     for i in range(len(P)):

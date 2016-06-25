@@ -34,10 +34,15 @@ Type your Chinese writings into a text file (in either Simplified or Traditional
 
 The default output is **anchipy_formatted.pdf**.
 
+=============
+DOCUMENTATION
+=============
+Please see `here <http://liang-chen.github.io/AnChiPy>`_. 
+
 =======
 LICENCE
 =======
-Please see `LICENSE <https://github.iu.edu/chen348/AnChiPy/blob/master/LICENSE>`_.
+MIT `LICENSE <https://github.iu.edu/chen348/AnChiPy/blob/master/LICENSE>`_.
 
 ===========
 Contributor
