@@ -42,9 +42,9 @@ Please see `here <http://liang-chen.github.io/AnChiPy>`_.
 =======
 LICENCE
 =======
-MIT `LICENSE <https://github.com/liang-chen/AnChiPy/blob/master/LICENSE>`_.
+MIT License
 
 ===========
 Contributor
 ===========
-Liang Chen (chen348@indiana.edu)
+`Liang Chen<chen348@indiana.edu>`_
