@@ -42,7 +42,7 @@ Please see `here <http://liang-chen.github.io/AnChiPy>`_.
 =======
 LICENCE
 =======
-MIT `LICENSE <https://github.iu.edu/chen348/AnChiPy/blob/master/LICENSE>`_.
+MIT `LICENSE <https://github.com/liang-chen/AnChiPy/blob/master/LICENSE>`_.
 
 ===========
 Contributor
