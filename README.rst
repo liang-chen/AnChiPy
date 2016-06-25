@@ -37,7 +37,7 @@ The default output is **anchipy_formatted.pdf**.
 =============
 DOCUMENTATION
 =============
-Please see `here <http://liang-chen.github.io/AnChiPy>`_. 
+Please see the documentation `here <http://liang-chen.github.io/AnChiPy>`_. 
 
 =======
 LICENCE
@@ -47,4 +47,4 @@ MIT License
 ===========
 Contributor
 ===========
-`Liang Chen<chen348@indiana.edu>`_
+`Liang Chen <chen348@indiana.edu>`_
