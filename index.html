@@ -24,7 +24,6 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="AnChiPy 0.1.1 documentation" href="#" />
-    <link rel="next" title="Modules" href="modules.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -41,10 +40,74 @@
 <h1>Welcome to AnChiPy&#8217;s documentation!<a class="headerlink" href="#welcome-to-anchipy-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<ul class="simple">
 </ul>
 </div>
+<span class="target" id="module-anchipy"></span><p>anchipy.anchipy: provides entry point main().</p>
+<dl class="function">
+<dt id="anchipy.add_border">
+<code class="descclassname">anchipy.</code><code class="descname">add_border</code><span class="sig-paren">(</span><em>draw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#add_border"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.add_border" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add top, bottom, left and right borders to the current doc</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.init_image">
+<code class="descclassname">anchipy.</code><code class="descname">init_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#init_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.init_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize one page</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.locate_paragraph_words">
+<code class="descclassname">anchipy.</code><code class="descname">locate_paragraph_words</code><span class="sig-paren">(</span><em>uni_words</em>, <em>curj</em>, <em>page</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#locate_paragraph_words"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.locate_paragraph_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locate words in paragraph</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.main">
+<code class="descclassname">anchipy.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.new_page_merge">
+<code class="descclassname">anchipy.</code><code class="descname">new_page_merge</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#new_page_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.new_page_merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge new page to the existing pages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>im</strong> &#8211; new page</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">PIL.image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.read_utf8_file">
+<code class="descclassname">anchipy.</code><code class="descname">read_utf8_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#read_utf8_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.read_utf8_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read file contents as utf8 characters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>string</em>) &#8211; input file name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array of utf-8 characters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="anchipy.render_paragraph">
+<code class="descclassname">anchipy.</code><code class="descname">render_paragraph</code><span class="sig-paren">(</span><em>im</em>, <em>draw</em>, <em>P</em>, <em>loc_list</em>, <em>page_list</em>, <em>curp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/anchipy.html#render_paragraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#anchipy.render_paragraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a paragraph</p>
+</dd></dl>
+
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -70,7 +133,6 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="modules.html" title="next chapter">Modules</a></li>
   </ul></li>
 </ul>
 </div>
