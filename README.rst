@@ -2,7 +2,7 @@ A*******
 AnChiPy
 *******
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
-   :target:  https://github.com/liang-chen/AnChiPy/blob/master/LICENSE
+	   :target: https://github.com/liang-chen/AnChiPy/blob/master/LICENSE
 
 This application is aimed to convert simplified Chinese text into formatted (classical) document.
 
