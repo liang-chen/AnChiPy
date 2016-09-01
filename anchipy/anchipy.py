@@ -3,20 +3,23 @@
 
 """anchipy.anchipy: provides entry point main()."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 import os
 import sys
 from math import ceil
 from pkg_resources import resource_filename
-from PIL import ImageFont, ImageDraw,Image
 from PyPDF2 import PdfFileReader,PdfFileMerger
-from globv import *
+from globalv import *
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.units import inch
 
 
 def read_utf8_file(filename):
     """
-    Read file contents as utf8 characters
+    Read file contentsq as utf8 characters
     
     :param filename: input file name
     :type filename: string
@@ -31,18 +34,18 @@ def locate_paragraph_words(uni_words, curj, page):
     """
     Locate words in paragraph
     """
-    global normal_font_size,img_height,img_width,udl_width,udl_margin,col_width,tot_margin
+    
     n = len(uni_words);
     ll = []
     pl = []
 
-    ##set word locations
-    curi = tot_margin ##increase y-coord
+    ### set word locations
+    curi = tot_margin + normal_font_size ##increase y-coord
     curp = page
-    #curj = img_width - tot_margin - font_size  ##decrease x-coord
+    
     for i in range(len(uni_words)):
-        if curi + normal_font_size > img_height - tot_margin:
-            curi = tot_margin
+        if curi > img_height - tot_margin:
+            curi = tot_margin + normal_font_size
             curj -= col_width
         
         if curj < tot_margin:
@@ -52,117 +55,140 @@ def locate_paragraph_words(uni_words, curj, page):
         ll.append((curj, curi))
         pl.append(curp)
         curi += normal_font_size
-    
+
     return ll,pl,curj
 
-def add_border(draw):
+def add_border(pdf):
     """
     Add top, bottom, left and right borders to the current doc
     """
-
-    #add horizontal ones:
+    pdf.setStrokeColorRGB(255,0,0)
+    
+    ### add horizontal borders:
     #outter
-    global inner_border_margin, inner_border_width, outter_border_margin, outter_border_width, img_height, img_width
+    pdf.setLineWidth(outter_border_width)
     i = outter_border_margin
     j1 = i
     j2 = img_width - j1 - outter_border_width/2
-    draw.line((j1,i,j2,i),fill = (255,0,0,0), width = outter_border_width)
+    pdf.line(j1,i,j2,i)
 
     i = img_height - outter_border_margin - outter_border_width/2
-    draw.line((j1,i,j2,i),fill = (255,0,0,0), width = outter_border_width)
+    pdf.line(j1,i,j2,i)
     
     #inner
+    pdf.setLineWidth(inner_border_width)
     i = outter_border_margin + outter_border_width + inner_border_margin
     j1 = i
     j2 = img_width - j1 - inner_border_width
-    draw.line((j1,i,j2,i),fill = (255,0,0,0), width = inner_border_width)
+    pdf.line(j1,i,j2,i)
 
     i = img_height - outter_border_margin - outter_border_width - inner_border_margin - inner_border_width
-    draw.line((j1,i,j2,i),fill = (255,0,0,0), width = inner_border_width)
+    pdf.line(j1,i,j2,i)
 
-    ##vertical ones
+    ### add vertical borders
     #outter
+    pdf.setLineWidth(outter_border_width)
     j = outter_border_margin
     i1 = j
     i2 = img_height - i1 - outter_border_width/2
-    draw.line((j,i1,j,i2), fill = (255,0,0,0), width = outter_border_width)
+    pdf.line(j,i1,j,i2)
 
     j = img_width - outter_border_margin - outter_border_width/2
-    draw.line((j,i1,j,i2), fill = (255,0,0,0), width = outter_border_width)
+    pdf.line(j,i1,j,i2)
 
     #inner
+    pdf.setLineWidth(inner_border_width)
     j = outter_border_margin + outter_border_width + inner_border_margin
     i1 = j
     i2 = img_height - i1 - inner_border_width
-    draw.line((j,i1,j,i2), fill = (255,0,0,0), width = inner_border_width)
+    pdf.line(j,i1,j,i2)
 
     j = img_width - j - inner_border_width
-    draw.line((j,i1,j,i2), fill = (255,0,0,0), width = inner_border_width)
+    pdf.line(j,i1,j,i2)
 
-
-def init_image():
+def init_pdf():
     """
-    Initialize one page
+    Initialize one pdf page
     """
-    global img_height,img_width
-    im = Image.new('RGB', (img_width, img_height), (255, 255, 255))
-    draw = ImageDraw.Draw(im)
-    add_border(draw)
-    return im, draw
+    
+    pdfmetrics.registerFont(TTFont('MyFont', resource_filename(__name__,'font.ttf')))
+    
+    pdf = canvas.Canvas('anchipy_formatted.pdf')
+    pdf.setFont('MyFont' , normal_font_size)
+    pdf.setPageSize((img_width, img_height))
+    add_border(pdf)
+    
+    ###background
+    #pdf.drawImage(resource_filename(__name__,'image.png'), 0, 0)
+    return pdf
 
-def new_page_merge(im):
+def page_merge(pdf):
     """
     Merge new page to the existing pages
 
-    :param im: new page
-    :type: PIL.image
+    :param pdf: new pdf page
     """
-    im.save('temp.pdf',resolution = 200.0)
+    
     merger = PdfFileMerger()
+    if os.path.isfile('anchipy_formatted.pdf'):
+        merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
+    pdf.save()
     merger.append(PdfFileReader(file('anchipy_formatted.pdf','rb')))
-    merger.append(PdfFileReader(file('temp.pdf','rb')))
     merger.write("anchipy_formatted.pdf")
-    os.remove('temp.pdf')
 
-def render_paragraph(im, draw, P, loc_list, page_list, curp):
+def render_pdf_paragraph(pdf, P, loc_list, page_list, curp):
     """
     Render a paragraph
     """
-    global normal_font_size,img_height,img_width,udl_width,udl_margin
-    font = ImageFont.truetype(resource_filename(__name__,'font.ttf'), size = normal_font_size, encoding = "unic")
+    
     for i in range(len(P)):
         if page_list[i] != curp and curp == 0:
-            im.save('anchipy_formatted.pdf', resolution = 200.0)
+            pdf.save()
             curp = page_list[i]
-            im, draw = init_image()
+            pdf = init_pdf()
         elif page_list[i] != curp and curp != 0:
-            #new page
-            new_page_merge(im)
+            ### another page
+            page_merge(pdf)
             curp = page_list[i]
-            im, draw = init_image()
-        
-        draw.text(loc_list[i], P[i],font=font,fill=(0,0,0,0))#jtof(uni_words[i]),font=font,fill=(0,0,0,0))
-        if loc_list[i][1] == tot_margin:
-            ##draw red vertical line
-            draw.line((loc_list[i][0]-udl_margin, tot_margin, loc_list[i][0]-udl_margin, img_height-tot_margin),fill = (255,0,0,0), width = udl_width)
+            pdf = init_pdf()
+    
+        ### fading effect
+        #pdf.setFillColorRGB(0,0,0,0.5 + float(img_height - loc_list[i][1])/2/img_height)
 
-    return im,draw,curp
+        pdf.drawString(loc_list[i][0], img_height - loc_list[i][1], P[i])
+    
+        if loc_list[i][1] == tot_margin + normal_font_size:
+            ### draw vertical line
+            pdf.setStrokeColorRGB(255,0,0)
+            pdf.line(loc_list[i][0]-udl_margin, tot_margin, loc_list[i][0]-udl_margin, img_height-tot_margin)
+    return pdf, curp
+
 
 def main():
     """
     Main function
     """
+    
+    ### read words from text file
     filename = sys.argv[1]
     uni_word_lines = [unicode(line, 'utf8') for line in read_utf8_file(filename)]
     
-    im, draw = init_image()
-    global img_width,col_width
-    curp = 0 #current page
-    curj = img_width - tot_margin - col_width #current horizontal position
+    ### initialization
+    if os.path.isfile('anchipy_formatted.pdf'):
+        os.remove('anchipy_formatted.pdf')
+    pdf = init_pdf()
+    
+    ### current page
+    curp = 0
+    
+    ### current horizontal position
+    curj = img_width - tot_margin - col_width
+    
+    ### render text onto svg
     for uni_words in uni_word_lines: 
         ll,pl,curj = locate_paragraph_words(uni_words, curj, curp)
-        #print curj
         curj -= col_width #paragraph turn
-        im, draw, curp = render_paragraph(im, draw, uni_words, ll, pl, curp)
-    new_page_merge(im)
+        pdf, curp= render_pdf_paragraph(pdf, uni_words, ll, pl, curp)
+        
+    page_merge(pdf)
 

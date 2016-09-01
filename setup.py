@@ -25,12 +25,12 @@ setup(
         "console_scripts": ['anchipy = anchipy.anchipy:main']
         },
     version = version,
-    description = "Automatic Ancient Chinese Style Typesetting.",
+    description = "Automatic Traditional Chinese Style Typesetting.",
     long_description = long_descr,
     author = "Liang Chen",
     author_email = "chen348@indiana.edu",
     install_requires=[
-          'PIL','pypdf2',#'jianfan'
+          'reportlab','pypdf2'
       ],
     url = "",
     include_package_data = True,
