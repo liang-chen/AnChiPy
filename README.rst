@@ -4,15 +4,15 @@ AnChiPy
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
    :target:  https://github.com/liang-chen/AnChiPy/blob/master/LICENSE
 
-This application is aimed to convert the plain simplified Chinese text into vertically formatted (a.k.a ancient style) classical Chinese document.
+This application is aimed to convert simplified Chinese text into formatted (classical) document.
 
 ==========
 Dependency
 ==========
 
-This package is dependent on `Python Imaging Library`_ (PIL) and `PyPDF2 1.24`_.
+This package is dependent on `reportlab 3.3.0`_ and `PyPDF2 1.24`_.
 
-.. _Python Imaging Library: https://pypi.python.org/pypi/PIL
+.. _reportlab 3.3.0: https://pypi.python.org/pypi/reportlab/3.3.0
 .. _PyPDF2 1.24: https://pypi.python.org/pypi/PyPDF2/1.24
 
 ============
@@ -28,7 +28,7 @@ Installation
 Usage
 =====
 
-Type your Chinese writings into a text file (in either Simplified or Traditional font), and use **AnChiPy** to generate the ancient-style page (in image format). For instance,
+Type your text into a txt file, and use **AnChiPy** to format and generate the PDF. For instance,
 
 .. code-block:: bash
 
