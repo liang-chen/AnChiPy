@@ -36,7 +36,7 @@ Type your text into a txt file, and use **AnChiPy** to format and generate the P
 
 The default output is **anchipy_formatted.pdf**.
 
-..image:: https://github.com/liang-chen/AnChiPy/blob/master/anchipy_formatted.pdf
+.. image:: https://github.com/liang-chen/AnChiPy/blob/master/anchipy_formatted.pdf
 
 =============
 DOCUMENTATION
