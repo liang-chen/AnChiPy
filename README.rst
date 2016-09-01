@@ -1,4 +1,4 @@
-*******
+A*******
 AnChiPy
 *******
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
@@ -36,8 +36,9 @@ Type your text into a txt file, and use **AnChiPy** to format and generate the P
 
 The default output is **anchipy_formatted.pdf**.
 
-.. image:: https://github.com/liang-chen/AnChiPy/blob/master/anchipy_formatted.pdf
-
+.. image:: https://github.com/liang-chen/AnChiPy/blob/master/examples/image.png
+   : target: https://github.com/liang-chen/AnChiPy/blob/master/anchipy_formatted.pdf
+	   
 =============
 DOCUMENTATION
 =============
