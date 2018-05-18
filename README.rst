@@ -42,7 +42,7 @@ The default output is **anchipy_formatted.pdf**.
 =============
 DOCUMENTATION
 =============
-Please see the documentation `here <http://liang-chen.github.io/AnChiPy>`_. 
+Please read the documentation `here <http://liang-chen.github.io/AnChiPy>`_. 
 
 =======
 LICENCE
